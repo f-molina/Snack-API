@@ -17,13 +17,24 @@ productController.store = (req, res, next) => {
     })
 }
 
-//Get the list of all the products
+//Get the list of all the products sorted by name
 productController.getProducts = (req, res, next) => {
+    let listSort = {name: -1};
     Product.find({}, (err, products) => {
         if(err)
         return res.status(400).send({"err": err});
         return res.status(200).send({products});
-    });
+    }).sort(listSort);
+}
+
+//Get the list sorted by likes
+productController.getProductsByLikes = (req, res, next) => {
+    let likeSort = {likes: -1};
+    Product.find({}, (err, products) => {
+        if(err)
+        return res.status(400).send({"err": err});
+        return res.status(200).send({products});
+    }).sort(likeSort);
 }
 
 //Delete a product from the list by id
@@ -51,7 +62,7 @@ productController.searchProductByName = (req, res, next) => {
 //Update a product by id
 productController.updateById = async (req, res, next) => {
     let {id} = req.params;
-    await Product.updateOne({_id:id}, req.body);
+    await Product.findOneAndUpdate({_id:id}, req.price, {new: true, useFindAndModify: false });
     return res.status(200).json({"message": "Successfully updated"});
 }
 
