@@ -51,21 +51,21 @@ productController.searchProductByName = (req, res, next) => {
 //Update a product by id
 productController.updateById = async (req, res, next) => {
     let {id} = req.params;
-    await Product.update({_id:id}, req.body);
+    await Product.updateOne({_id:id}, req.body);
     return res.status(200).json({"message": "Successfully updated"});
 }
 
 //Like a product by name
 productController.likesByName = async (req, res, next) => {
     let {name} = req.params;
-    await Product.findOneAndUpdate({name: {$regex : name, $options: "$i"}}, { $inc: { likes: 1 } }, {new: true });
+    await Product.findOneAndUpdate({name: {$regex : name, $options: "$i"}}, { $inc: { likes: 1 } }, {new: true, useFindAndModify: false });
     return res.status(200).json({"message": "Liked!"});
 }
 
 //Buy a product and reduce stock
 productController.buyByName = async (req, res, next) => {
     let {name} = req.params;
-    await Product.findOneAndUpdate({name: {$regex: name, $options: "$i"}}, { $inc: { stock: -1 } }, {new: true});
+    await Product.findOneAndUpdate({name: {$regex: name, $options: "$i"}}, { $inc: { stock: -1 } }, {new: true, useFindAndModify: false });
     return res.status(200).json({"message": "Product purchased!"});
 }
 
