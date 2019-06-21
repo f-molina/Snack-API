@@ -6,6 +6,10 @@ var logger = require('morgan');
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var swaggerJSDoc = require('./swagger');
+var engine = require('ejs-mate');
+var flash = require('connect-flash');
+var session = require('express-session');
+var passport = require('passport');
 
 //db
 mongoose.connect('mongodb://localhost/snacks', {
@@ -13,14 +17,17 @@ mongoose.connect('mongodb://localhost/snacks', {
 }).then(db => console.log("DB connected"))
   .catch(err => console.log(err));
 
-var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
 
 var app = express();
+require('./passport/auth');
+
 swaggerJSDoc(app);
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'))
+app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
@@ -30,13 +37,25 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/api/v1', productsRouter);
+app.use(session({
+  secret: 'secretKey',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use((req, res, next) => {
+  app.locals.signinMessage = req.flash('signinMessage');
+  app.locals.signupMessage = req.flash('signupMessage');
+  app.locals.user = req.user;
+  console.log(app.locals)
+  next();
 });
+
+app.use('/', usersRouter);
+app.use('/api', productsRouter);
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -47,6 +66,11 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
 });
 
 module.exports = app;
