@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Portal</title>
+</head>
+<body>
+  <% if (!user) { %>
+  <a href="/login">Sign In</a>
+  <a href="/register">Register</a>
+  <% } else { %>
+  <a href="/logout">Logout</a>
+  <a href="/api/v1/api-docs">API</a>
+  <% } %>
+
+  <%if (signinMessage) {%>
+    <p><%= signinMessage %></p>
+  <% } %>
+  <%if (signupMessage) {%>
+    <p><%= signupMessage %></p>
+  <% } %>
+
+  <%- body %>
+</body>
+</html>
