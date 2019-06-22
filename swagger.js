@@ -10,7 +10,7 @@ var swaggerDefinition = {
       description: 'Rest API',
     },
     host: 'localhost:3000',
-    basePath: '/',
+    basePath: '/api/v1',
   };
 
   var options = {
@@ -23,5 +23,5 @@ var swaggerDefinition = {
   var swaggerSpec = swaggerJSDoc(options);
 
   module.exports = (app) => {
-    app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   }
