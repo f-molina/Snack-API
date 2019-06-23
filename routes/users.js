@@ -1,5 +1,6 @@
 const router = require('express').Router();
 
+const userAuth = require('../middlewares/userAuth');
 const userController = require('../controllers/UserController');
 
 /**
@@ -15,10 +16,6 @@ const userController = require('../controllers/UserController');
 *          - email
 *          - password
 */
-
-router.get('/', (req, res, next) => {
-  res.render('index');
-});
 
 /**
 * @swagger
@@ -120,7 +117,7 @@ router.post('/users/login', userController.login);
 *         schema:
 *           $ref: '#/definitions/user'
 */
-router.get('/users/profile', isLoggedIn, (req, res, next) => {
+router.get('/users/profile', userAuth.normalUser, (req, res, next) => {
   res.status(200).json(req.user);
 });
 
@@ -141,14 +138,5 @@ router.get('/users/profile', isLoggedIn, (req, res, next) => {
 *           $ref: '#/definitions/user'
 */
 router.get('/users/logout', userController.logout);
-
-
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated())
-      return next();
-  res.status(400).json({
-      'message': 'access denied'
-  });
-}
 
 module.exports = router;
