@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+const userAuth = require('../middlewares/userAuth');
 const productController = require('../controllers/ProductController');
 
 /**
@@ -50,7 +51,7 @@ const productController = require('../controllers/ProductController');
 *       200:
 *         description: Successfully created
 */
-router.post('/products/create', productController.store);
+router.post('/products/create', userAuth.admin, productController.store);
 
 /**
 * @swagger
@@ -129,7 +130,7 @@ router.get('/products/search/:name', productController.searchProductByName);
  *       200:
  *         description: Deleted product
  */
-router.delete('/products/delete/:id', productController.deleteProduct);
+router.delete('/products/delete/:id', userAuth.admin, productController.deleteProduct);
 /**
 * @swagger
 * /products/update/{id}:
@@ -156,7 +157,7 @@ router.delete('/products/delete/:id', productController.deleteProduct);
 *       200:
 *         description: Successfully updated
 */
-router.put('/products/update/:id', productController.updateById);
+router.put('/products/update/:id', userAuth.admin, productController.updateById);
 /**
  * @swagger
  * /products/like/{name}:
@@ -180,7 +181,7 @@ router.put('/products/update/:id', productController.updateById);
  *       200:
  *         description: Liked!
  */
-router.put('/products/like/:name', isLoggedIn, productController.likesByName);
+router.put('/products/like/:name', userAuth.normalUser, productController.likesByName);
 /**
  * @swagger
  * /products/buy/{name}:
@@ -204,14 +205,6 @@ router.put('/products/like/:name', isLoggedIn, productController.likesByName);
  *       200:
  *         description: Purchased!
  */
-router.put('/products/buy/:name', isLoggedIn, productController.buyByName);
-
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated())
-        return next();
-    res.status(400).json({
-        'message': 'access denied'
-    });
-}
+router.put('/products/buy/:name', userAuth.normalUser, productController.buyByName);
 
 module.exports = router;
