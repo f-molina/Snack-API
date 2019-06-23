@@ -17,10 +17,18 @@ productController.store = (req, res, next) => {
     })
 }
 
-//Get the list of all the products sorted by name
+//Get the list of all the products sorted by name and with pagination
 productController.getProducts = (req, res, next) => {
-    let listSort = {name: -1};
-    Product.find({}, (err, products) => {
+    let page = parseInt(req.query.page);
+    let limit = parseInt(req.query.limit);
+    let query = {};
+    if(page <=0) {
+        return res.status(400).json({"error": "invalid page number"})
+    }
+    query.skip = limit * (page -1);
+    query.limit = limit;
+    let listSort = {name: 1};
+    Product.find({}, {}, query, (err, products) => {
         if(err)
         return res.status(400).send({"err": err});
         return res.status(200).send({products});
@@ -62,15 +70,19 @@ productController.searchProductByName = (req, res, next) => {
 //Update a product by id
 productController.updateById = async (req, res, next) => {
     let {id} = req.params;
-    await Product.findOneAndUpdate({_id:id}, req.price, {new: true, useFindAndModify: false });
-    return res.status(200).json({"message": "Successfully updated"});
+    await Product.findOneAndUpdate({_id:id}, { price: req.body.price}, {new: true, useFindAndModify: false },  (err) => {
+        if(err){
+            return res.status(400).send({"err": err});
+        }
+        return res.status(200).json({"message": "Successfully updated"});
+    });
 }
 
 //Like a product by name
 productController.likesByName = async (req, res, next) => {
     let {name} = req.params;
-    await Product.findOneAndUpdate({name: {$regex : name, $options: "$i"}}, { $inc: { likes: 1 } }, {new: true, useFindAndModify: false });
-    return res.status(200).json({"message": "Liked!"});
+    await Product.findOneAndUpdate({name: {$regex : name, $options: "$i"}}, { $inc: { likes: 1 }}, {new: true, useFindAndModify: false });
+        return res.status(200).json({"message": "Liked!"});
 }
 
 //Buy a product and reduce stock
