@@ -22,7 +22,7 @@ const productController = require('../controllers/ProductController');
 
 /**
 * @swagger
-* /api/v1:
+* /products/create:
 *   post:
 *     tags:
 *       - products
@@ -50,15 +50,16 @@ const productController = require('../controllers/ProductController');
 *       200:
 *         description: Successfully created
 */
-router.post('/', productController.store);
+router.post('/products/create', productController.store);
 
 /**
 * @swagger
-* /api/v1/products:
+* /products:
 *   get:
 *     tags:
 *       - products
-*     description: Returns all products sorted by name
+*     summary: List of all products sorted by name
+*     description: Returns all products
 *     produces:
 *       - application/json
 *     responses:
@@ -70,10 +71,11 @@ router.post('/', productController.store);
 router.get('/products', productController.getProducts);
 /**
 * @swagger
-* /api/v1/productlikes:
+* /products/productlikes:
 *   get:
 *     tags:
 *       - products
+*     summary: List of all products sorted by likes
 *     description: Returns all products sorted by likes
 *     produces:
 *       - application/json
@@ -83,13 +85,14 @@ router.get('/products', productController.getProducts);
 *         schema:
 *           $ref: '#/definitions/product'
 */
-router.get('/productlikes', productController.getProductsByLikes);
+router.get('/products/productlikes', productController.getProductsByLikes);
 /**
  * @swagger
- * /api/v1/search/{name}:
+ * /products/search/{name}:
  *   get:
  *     tags:
  *       - products
+ *     summary: Search for a product by it's name
  *     description: Returns all products by name
  *     produces:
  *       - application/json
@@ -103,13 +106,14 @@ router.get('/productlikes', productController.getProductsByLikes);
  *         schema:
  *           $ref: '#/definitions/product'
  */
-router.get('/search/:name', productController.searchProductByName);
+router.get('/products/search/:name', productController.searchProductByName);
 /**
  * @swagger
- * /api/v1/delete/{id}:
+ * /products/delete/{id}:
  *   delete:
  *     tags:
  *       - products
+ *     summary: Delete a product
  *     description: Deletes a single product
  *     produces:
  *       - application/json
@@ -125,37 +129,42 @@ router.get('/search/:name', productController.searchProductByName);
  *       200:
  *         description: Deleted product
  */
-router.delete('/delete/:id', productController.deleteProduct);
+router.delete('/products/delete/:id', productController.deleteProduct);
 /**
 * @swagger
-* /api/v1/update/{id}:
+* /products/update/{id}:
 *   put:
 *     tags: 
 *      - products
+*     summary: Update price
 *     description: Updates a single product price
 *     produces: application/json
 *     parameters:
-*       - name: id 
-*         in: path
 *       - name: price
 *         in: path
 *         properties:
+*              id:
+*                type: string
 *              price:
 *                type: float
 *         required:
+*          - id
 *          - price
+*     schema:
+*           $ref: '#/definitions/product'
 *     responses:
 *       200:
 *         description: Successfully updated
 */
-router.put('/update/:id', productController.updateById);
+router.put('/products/update/:id', productController.updateById);
 /**
  * @swagger
- * /api/v1/like/{name}:
+ * /products/like/{name}:
  *   put:
  *     tags: 
  *      - products
- *     description: Like a product
+ *     summary: Like a product
+ *     description: Like a product by name
  *     produces: application/json
  *     parameters:
  *       - name: name 
@@ -171,13 +180,14 @@ router.put('/update/:id', productController.updateById);
  *       200:
  *         description: Liked!
  */
-router.put('/like/:name', productController.likesByName);
+router.put('/products/like/:name', isLoggedIn, productController.likesByName);
 /**
  * @swagger
- * /api/v1/buy/{name}:
+ * /products/buy/{name}:
  *   put:
  *     tags: 
  *      - products
+ *     summary: Buy a product
  *     description: Buy a product
  *     produces: application/json
  *     parameters:
@@ -194,6 +204,14 @@ router.put('/like/:name', productController.likesByName);
  *       200:
  *         description: Purchased!
  */
-router.put('/buy/:name', productController.buyByName);
+router.put('/products/buy/:name', isLoggedIn, productController.buyByName);
+
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated())
+        return next();
+    res.status(400).json({
+        'message': 'access denied'
+    });
+}
 
 module.exports = router;
