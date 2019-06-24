@@ -13,8 +13,8 @@ userController.register = passport.authenticate('local-register', {
 
 //login user
 userController.login = passport.authenticate('local-login', {
-    successRedirect: '/api/v1/users/profile',
-    failureRedirect: '/api/v1/users/login',
+    successRedirect: '/',
+    failureRedirect: '/',
     failureFlash: true
 }), (req, res, next) => {
     res.status(200).json({"message": "logged in"});
@@ -23,6 +23,7 @@ userController.login = passport.authenticate('local-login', {
 //logout
 userController.logout = (req, res, next) => {
     req.logout();
+    res.redirect('/');
     res.status(200).json({"message": "logged out"});
 };
 
