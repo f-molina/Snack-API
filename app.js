@@ -5,18 +5,21 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
-var swaggerJSDoc = require('./swagger');
+var swaggerJSDoc = require('./middlewares/swagger');
 var engine = require('ejs-mate');
 var flash = require('connect-flash');
 var session = require('express-session');
 var passport = require('passport');
 
+require('dotenv').config();
+
 //db
-mongoose.connect('mongodb://localhost/snacks', {
+mongoose.connect(`mongodb://${process.env.USERDB}:${process.env.PASSDB}@ds241977.mlab.com:41977/snacks`, {
   useNewUrlParser: true
 }).then(db => console.log("DB connected"))
   .catch(err => console.log(err));
 
+var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
 
@@ -54,8 +57,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', usersRouter);
-app.use('/api', productsRouter);
+app.use('/', indexRouter);
+app.use('/api/v1', usersRouter);
+app.use('/api/v1', productsRouter);
 
 // error handler
 app.use(function(err, req, res, next) {
