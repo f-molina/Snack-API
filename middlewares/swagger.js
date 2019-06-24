@@ -9,7 +9,7 @@ var swaggerDefinition = {
       version: '1.0.0',
       description: 'Rest API that allows a small snack store to manage their products',
     },
-    host: 'localhost:3000',
+    host: 'http://snacks-challenge.herokuapp.com/',
     basePath: '/api/v1',
   };
 
