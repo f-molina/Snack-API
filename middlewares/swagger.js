@@ -7,7 +7,7 @@ var swaggerDefinition = {
     info: {
       title: 'Snack API',
       version: '1.0.0',
-      description: 'Rest API',
+      description: 'Rest API that allows a small snack store to manage their products',
     },
     host: 'localhost:3000',
     basePath: '/api/v1',
