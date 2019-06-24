@@ -1,5 +1,20 @@
 products();
 
+/*document.querySelector("#formSearch").addEventListener('submit',function(e){
+  e.preventDefault();
+  let url = '/api/v1/products/search/'+document.forms["formSearch"]['name'].value;
+ console.log(url);
+  fetch(url,{
+      method:"GET",
+      headers:
+      {
+          'Content-Type':'application/json'
+      }
+  }).then(function(data){
+    console.log(data);  
+  })
+});*/
+
 function products() {
   let productsTable = document.querySelector("#fill");
   let content = "";
