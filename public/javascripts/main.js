@@ -28,6 +28,7 @@ function products() {
 //datatable live search, sort
 var urlUpdate = '';
 var tabla = $("#myTable").DataTable({
+  "order": [[ 1, "asc" ]],
     "ajax":{
         "url":"/api/v1/products",
         "method" : "GET",
