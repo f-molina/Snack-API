@@ -94,6 +94,12 @@ npm run devstart
 ### DELETE
 `/api/v1/products/delete/{id}`. Delete a product by id (admin only)
 
+### Pagination
+
+You can get the list paginated, it uses two parameters, page and limit, so if you would like to get the first page and only 5 products you'll use something like:
+
+`/api/v1/products?page=1&limit=5`
+
 ### Users
 
 ### POST
