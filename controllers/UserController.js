@@ -22,7 +22,6 @@ userController.login = passport.authenticate('local-login', {
 userController.logout = (req, res, next) => {
     req.logout();
     res.redirect('/');
-    res.status(200).json({"message": "logged out"});
 };
 
 //list of users
