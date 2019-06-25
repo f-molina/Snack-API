@@ -104,6 +104,8 @@ npm run devstart
 `/api/v1/users/logout`. Logout. <br>
 `/api/v1/users`. Shows a list of users in JSON format.
 
+You can test the API endpoints using swagger ui by going to either 'localhost:3000/api-docs' or by clicking in the Documentation link in the heroku app. It can also be tested with Postman.
+
 ## Heroku app
 
 http://snacks-challenge.herokuapp.com/
