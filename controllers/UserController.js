@@ -6,7 +6,6 @@ const passport = require('passport');
 userController.register = passport.authenticate('local-register', {
     successRedirect: '/api/v1/users/profile',
     failureRedirect: '/api/v1/users/register',
-    failureFlash: true
 }), (req, res, next) => {
     res.status(200).json({"message": "Registered"});
 };
@@ -15,7 +14,6 @@ userController.register = passport.authenticate('local-register', {
 userController.login = passport.authenticate('local-login', {
     successRedirect: '/',
     failureRedirect: '/',
-    failureFlash: true
 }), (req, res, next) => {
     res.status(200).json({"message": "logged in"});
 };
