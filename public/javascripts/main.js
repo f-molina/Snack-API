@@ -1,25 +1,10 @@
 products();
 
-/*document.querySelector("#formSearch").addEventListener('submit',function(e){
-  e.preventDefault();
-  let url = '/api/v1/products/search/'+document.forms["formSearch"]['name'].value;
- console.log(url);
-  fetch(url,{
-      method:"GET",
-      headers:
-      {
-          'Content-Type':'application/json'
-      }
-  }).then(function(data){
-    console.log(data);  
-  })
-});*/
-
 function products() {
   let productsTable = document.querySelector("#fill");
   let content = "";
 
-  fetch("/api/v1/products?page=1&limit=10")
+  fetch("/api/v1/products")
     .then(function(response) {
       return response.text();
     })
@@ -39,3 +24,20 @@ function products() {
       productsTable.innerHTML = content;
     });
 }
+
+//datatable live search, sort
+var urlUpdate = '';
+var tabla = $("#myTable").DataTable({
+    "ajax":{
+        "url":"/api/v1/products",
+        "method" : "GET",
+        "dataSrc":"products"
+    },
+    columns:[
+        {"data":"_id"},
+        {"data":"name"},
+        {"data":"price"},
+        {"data":"stock"},
+        {"data": "likes"},
+    ]
+});
